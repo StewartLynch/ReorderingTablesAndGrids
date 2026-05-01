@@ -13,25 +13,24 @@
 //----------------------------------------------
 // Copyright © 2026 CreaTECH Solutions (Stewart Lynch). All rights reserved.
 
+import SwiftData
 import SwiftUI
 
-struct ContentView: View {
+struct SportPreviewTrait: PreviewModifier {
+    func body(content: Content, context: ModelContainer) -> some View {
+        content.modelContainer(context)
+    }
 
-    var body: some View {
-            TabView {
-                TableRowsView()
-                .tabItem {
-                    Label("Rows", systemImage: "list.bullet")
-                }
-
-                GridReorderingView()
-                .tabItem {
-                    Label("Grid", systemImage: "square.grid.2x2")
-                }
-            }
+    static func makeSharedContext() async throws -> ModelContainer {
+        let container = try ModelContainer(
+            for: Sport.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        Sport.examples.forEach { container.mainContext.insert($0) }
+        return container
     }
 }
 
-#Preview(traits: .sportExamples) {
-    ContentView()
+extension PreviewTrait where T == Preview.ViewTraits {
+    static var sportExamples: Self = .modifier(SportPreviewTrait())
 }

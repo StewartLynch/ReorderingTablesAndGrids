@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BB1111132FCE000300000001 /* SFSymbolPicker in Frameworks */ = {isa = PBXBuildFile; productRef = BB1111122FCE000300000001 /* SFSymbolPicker */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		BBC388FE2FA5335700FF7195 /* Reordering.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reordering.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB1111132FCE000300000001 /* SFSymbolPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = Reordering;
 			packageProductDependencies = (
+				BB1111122FCE000300000001 /* SFSymbolPicker */,
 			);
 			productName = Reordering;
 			productReference = BBC388FE2FA5335700FF7195 /* Reordering.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = BBC388F52FA5335700FF7195;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BB1111112FCE000300000001 /* XCRemoteSwiftPackageReference "SFSymbolPicker" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BBC388FF2FA5335700FF7195 /* Products */;
 			projectDirPath = "";
@@ -332,6 +341,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BB1111112FCE000300000001 /* XCRemoteSwiftPackageReference "SFSymbolPicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/StewartLynch/SFSymbolPicker";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BB1111122FCE000300000001 /* SFSymbolPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BB1111112FCE000300000001 /* XCRemoteSwiftPackageReference "SFSymbolPicker" */;
+			productName = SFSymbolPicker;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BBC388F62FA5335700FF7195 /* Project object */;
 }

@@ -1,0 +1,15 @@
+{
+  "originHash" : "a4011af53fc6ebfa0ee6ae73a9a1fede46a67a7ba7fd8942767be0752aae3e32",
+  "pins" : [
+    {
+      "identity" : "sfsymbolpicker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/StewartLynch/SFSymbolPicker",
+      "state" : {
+        "branch" : "main",
+        "revision" : "5badece2a78387a37a3c3a3c86b56a7b49f31e52"
+      }
+    }
+  ],
+  "version" : 3
+}

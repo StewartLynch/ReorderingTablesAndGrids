@@ -13,25 +13,21 @@
 //----------------------------------------------
 // Copyright © 2026 CreaTECH Solutions (Stewart Lynch). All rights reserved.
 
-import SwiftUI
+import SwiftData
 
-struct ContentView: View {
-
-    var body: some View {
-            TabView {
-                TableRowsView()
-                .tabItem {
-                    Label("Rows", systemImage: "list.bullet")
-                }
-
-                GridReorderingView()
-                .tabItem {
-                    Label("Grid", systemImage: "square.grid.2x2")
-                }
-            }
+enum ItemStorage {
+    static func seedSports(in modelContext: ModelContext) {
+        Sport.examples.forEach { modelContext.insert($0) }
+        try? modelContext.save()
     }
-}
 
-#Preview(traits: .sportExamples) {
-    ContentView()
+    static func nextSortOrder(after sports: [Sport]) -> Int {
+        (sports.map(\.sortOrder).max() ?? -1) + 1
+    }
+
+    static func updateSortOrder(for sports: [Sport]) {
+        for (index, sport) in sports.enumerated() {
+            sport.sortOrder = index
+        }
+    }
 }

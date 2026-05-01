@@ -15,12 +15,14 @@
 
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ReorderingApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modelContainer(for: Sport.self)
         }
     }
 }
