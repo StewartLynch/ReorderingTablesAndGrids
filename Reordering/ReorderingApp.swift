@@ -21,7 +21,7 @@ import SwiftData
 struct ReorderingApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            StartTabView()
                 .modelContainer(for: Sport.self)
         }
     }

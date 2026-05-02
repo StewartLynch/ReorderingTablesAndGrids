@@ -13,13 +13,10 @@
 //----------------------------------------------
 // Copyright © 2026 CreaTECH Solutions (Stewart Lynch). All rights reserved.
 
-import SwiftData
 import SwiftUI
 
 struct TableRowsView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Sport.sortOrder) private var sports: [Sport]
-    @State private var isAddingSport = false
+    private let sports = Sport.examples
     
     var body: some View {
         NavigationStack {
@@ -39,35 +36,13 @@ struct TableRowsView: View {
                             .frame(width: 28)
                     }
                 }
-                .onMove(perform: moveRows)
             }
             .navigationTitle("List Reordering")
-            .toolbar {
-                if sports.isEmpty {
-                    Button("Seed Data", systemImage: "tray.and.arrow.down") {
-                        ItemStorage.seedSports(in: modelContext)
-                    }
-                }
-
-                Button("Add Sport", systemImage: "plus") {
-                    isAddingSport = true
-                }
-            }
-            .sheet(isPresented: $isAddingSport) {
-                AddSportView(nextSortOrder: ItemStorage.nextSortOrder(after: sports))
-            }
         }
-    }
-
-    private func moveRows(from source: IndexSet, to destination: Int) {
-        var reorderedSports = sports
-        reorderedSports.move(fromOffsets: source, toOffset: destination)
-        ItemStorage.updateSortOrder(for: reorderedSports)
-        try? modelContext.save()
     }
 }
 
 
-#Preview(traits: .sportExamples) {
+#Preview {
     TableRowsView()
 }

@@ -15,7 +15,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct StartTabView: View {
 
     var body: some View {
             TabView {
@@ -33,6 +33,6 @@ struct ContentView: View {
     }
 }
 
-#Preview(traits: .sportExamples) {
-    ContentView()
+#Preview {
+    StartTabView()
 }
