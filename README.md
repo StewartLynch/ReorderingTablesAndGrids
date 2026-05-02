@@ -1,6 +1,6 @@
 # Reordering Lists and Grids in SwiftUI
 
-![AppIcon128](Images/AppIcon128.png) This is the **Starter Project** for the video on rendering items in lists and grids in SwiftUI and persisting to SwiftData
+![AppIcon128](Images/AppIcon128.png) This is the **completed Source Code** for the video on rendering items in lists and grids in SwiftUI and persisting to SwiftData
 
 If you want to support my work, you can - </br>
 
