@@ -19,13 +19,14 @@ struct ContentView: View {
 
     var body: some View {
             TabView {
-                TableRowsView()
-                .tabItem {
-                    Label("Rows", systemImage: "list.bullet")
+                Tab {
+                    TableRowsView()
+                } label: {
+                    Label("List", systemImage: "list.bullet")
                 }
-
-                GridReorderingView()
-                .tabItem {
+                Tab {
+                    GridReorderingView()
+                } label: {
                     Label("Grid", systemImage: "square.grid.2x2")
                 }
             }

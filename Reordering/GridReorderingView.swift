@@ -25,13 +25,18 @@ struct GridReorderingView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Sport.sortOrder) private var sports: [Sport]
     @State private var draggedItem: Sport?
+    @State private var dragSports: [Sport] = []
     @State private var isAddingSport = false
+
+    private var displayedSports: [Sport] {
+        draggedItem == nil ? sports : dragSports
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(sports) { item in
+                    ForEach(displayedSports) { item in
                         SportCard(item: item)
                         .onDrag {
                             setDraggedItem(item)
@@ -42,8 +47,8 @@ struct GridReorderingView: View {
                             delegate: GridItemDropDelegate(
                                 targetItem: item,
                                 draggedItem: draggedItem,
-                                setDraggedItem: setDraggedItem,
-                                moveItem: moveItem
+                                moveItem: moveItem,
+                                commitMove: commitMove
                             )
                         )
                     }
@@ -70,22 +75,28 @@ struct GridReorderingView: View {
 
     private func setDraggedItem(_ item: Sport?) {
         draggedItem = item
+        dragSports = item == nil ? [] : sports
     }
 
     private func moveItem(_ item: Sport, to target: Sport) {
         guard item != target,
-              let sourceIndex = sports.firstIndex(of: item),
-              let targetIndex = sports.firstIndex(of: target)
+              let sourceIndex = dragSports.firstIndex(of: item),
+              let targetIndex = dragSports.firstIndex(of: target)
         else { return }
 
         withAnimation(.snappy) {
-            var reorderedSports = sports
-            reorderedSports.move(
+            dragSports.move(
                 fromOffsets: IndexSet(integer: sourceIndex),
                 toOffset: targetIndex > sourceIndex ? targetIndex + 1 : targetIndex
             )
-            ItemStorage.updateSortOrder(for: reorderedSports)
         }
+    }
+
+    private func commitMove() {
+        let reorderedSports = dragSports
+        setDraggedItem(nil)
+
+        ItemStorage.updateSortOrder(for: reorderedSports)
         try? modelContext.save()
     }
 }
@@ -120,8 +131,8 @@ private struct SportCard: View {
 private struct GridItemDropDelegate: DropDelegate {
     let targetItem: Sport
     let draggedItem: Sport?
-    let setDraggedItem: (Sport?) -> Void
     let moveItem: (Sport, Sport) -> Void
+    let commitMove: () -> Void
 
     func dropEntered(info: DropInfo) {
         guard let draggedItem else { return }
@@ -129,7 +140,7 @@ private struct GridItemDropDelegate: DropDelegate {
     }
 
     func performDrop(info: DropInfo) -> Bool {
-        setDraggedItem(nil)
+        commitMove()
         return true
     }
 
