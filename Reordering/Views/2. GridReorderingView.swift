@@ -13,26 +13,58 @@
 //----------------------------------------------
 // Copyright © 2026 CreaTECH Solutions (Stewart Lynch). All rights reserved.
 
+import SwiftData
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct GridReorderingView: View {
     private let columns = [
         GridItem(.adaptive(minimum: 140), spacing: 16)
     ]
 
-    private let sports = Sport.examples
+    @Query(sort: \Sport.sortOrder) private var sports: [Sport]
+    @Environment(\.modelContext) var modelContext
+    
+    @State private var draggedItem: Sport?
+    @State private var displaySports: [Sport] = []
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(sports) { item in
+                    ForEach(displaySports) { item in
                         SportCard(item: item)
+                            .onDrag {
+                                draggedItem = item
+                                let id = item.persistentModelID
+                                return NSItemProvider(object: "\(id)" as NSString)
+                            }
+                            .onDrop(
+                                of: [UTType.text],
+                                delegate: GridItemDropDelegate(
+                                    draggedItem: draggedItem,
+                                    sports: $displaySports,
+                                    targetItem: item,
+                                    commitMove: {
+                                        ItemStorage.updateSortOrder(for: displaySports)
+                                        try? modelContext.save()
+                                        draggedItem = nil
+                                        
+                                    }
+                                )
+                            )
                     }
                 }
                 .padding()
             }
             .navigationTitle("Grid Reordering")
+        }
+        .onAppear {
+            displaySports = sports
+        }
+        .onChange(of: sports) {
+            guard draggedItem == nil else { return }
+            displaySports = sports
         }
     }
 }
@@ -64,6 +96,32 @@ private struct SportCard: View {
     }
 }
 
-#Preview {
+struct GridItemDropDelegate: DropDelegate {
+    let draggedItem: Sport?
+    @Binding var sports: [Sport]
+    let targetItem: Sport
+    let commitMove: () -> Void
+    
+    func performDrop(info: DropInfo) -> Bool {
+        commitMove()
+        return true
+    }
+    
+    func dropEntered(info: DropInfo) {
+        guard let item = draggedItem,
+              item != targetItem,
+              let sourceIndex = sports.firstIndex(of: item),
+              let targetIndex = sports.firstIndex(of: targetItem) else { return }
+        withAnimation {
+            sports.move(fromOffsets: IndexSet(integer: sourceIndex), toOffset: targetIndex > sourceIndex ? targetIndex + 1 : targetIndex)
+        }
+    }
+    
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        DropProposal(operation: .move)
+    }
+}
+
+#Preview(traits: .sportExamples) {
     GridReorderingView()
 }
