@@ -39,6 +39,7 @@ struct TableRowsView: View {
                     }
                 }
                 .onMove(perform: moveRows)
+                .onDelete(perform: deleteRows)
             }
             .navigationTitle("List Reordering")
             .toolbar {
@@ -61,6 +62,16 @@ struct TableRowsView: View {
         var reorderedSports = sports
         reorderedSports.move(fromOffsets: source, toOffset: destination)
         ItemStorage.updateSortOrder(for: reorderedSports)
+        try? modelContext.save()
+    }
+    
+    private func deleteRows(at indexSet: IndexSet) {
+        for index in indexSet {
+            modelContext.delete(sports[index])
+        }
+        var remainingSports = sports
+        remainingSports.remove(atOffsets: indexSet)
+        ItemStorage.updateSortOrder(for: remainingSports)
         try? modelContext.save()
     }
 }
