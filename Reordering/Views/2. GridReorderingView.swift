@@ -28,12 +28,21 @@ struct GridReorderingView: View {
     @State private var draggedItem: Sport?
     @State private var displaySports: [Sport] = []
 
+    @State private var isAddingSport = false
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(displaySports) { item in
                         SportCard(item: item)
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                        deleteItem(item)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                             .onDrag {
                                 draggedItem = item
                                 let id = item.persistentModelID
@@ -49,7 +58,6 @@ struct GridReorderingView: View {
                                         ItemStorage.updateSortOrder(for: displaySports)
                                         try? modelContext.save()
                                         draggedItem = nil
-                                        
                                     }
                                 )
                             )
@@ -58,6 +66,15 @@ struct GridReorderingView: View {
                 .padding()
             }
             .navigationTitle("Grid Reordering")
+            .toolbar {
+               
+                Button("Add Sport", systemImage: "plus") {
+                    isAddingSport = true
+                }
+            }
+            .sheet(isPresented: $isAddingSport) {
+                AddSportView(nextSortOrder: ItemStorage.nextSortOrder(after: sports))
+            }
         }
         .onAppear {
             displaySports = sports
@@ -66,6 +83,14 @@ struct GridReorderingView: View {
             guard draggedItem == nil else { return }
             displaySports = sports
         }
+    }
+    
+    private func deleteItem(_ item: Sport) {
+        if draggedItem == item { draggedItem = nil }
+        modelContext.delete(item)
+        displaySports = sports.filter { $0.persistentModelID != item.persistentModelID }
+        ItemStorage.updateSortOrder(for: displaySports)
+        try? modelContext.save()
     }
 }
 
